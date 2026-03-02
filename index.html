@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guitar Roadmap">
+<meta name="theme-color" content="#2c1810">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='80' fill='%232c1810'/%3E%3Ctext x='256' y='320' font-size='280' text-anchor='middle' fill='%23c4813a'%3E🎸%3C/text%3E%3C/svg%3E">
+<title>Guitar Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf8f5; --bg-card: #fff; --text: #2c2416; --text-muted: #6b5e4f;
+  --accent: #8b4513; --accent-light: #c4813a; --accent-bg: #f5ede3;
+  --border: #d9cfc2; --link: #6b3a1f; --shadow: rgba(44,36,22,0.08);
+  --phase1: #2e6b50; --phase2: #4a6fa5; --phase3: #8b5e3c; --phase4: #7b2d3e; --phase5: #4a4a7a;
+  --check: #3a8a5c; --nav-h: 56px; --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Source Sans 3',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; font-size:15px; padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 8px); overscroll-behavior-y:contain; }
+
+/* ── Top Header ── */
+.app-header { background:linear-gradient(135deg,#2c1810 0%,#4a2a15 50%,#6b3a1f 100%); color:#faf8f5; padding:calc(env(safe-area-inset-top,20px) + 12px) 16px 14px; text-align:center; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,0.25); }
+.app-header h1 { font-family:'Lora',Georgia,serif; font-size:1.25rem; font-weight:700; letter-spacing:-0.02em; }
+.app-header .sub { font-size:0.8rem; opacity:0.7; font-style:italic; font-family:'Lora',serif; margin-top:2px; }
+
+/* ── Progress Bar ── */
+.progress-wrap { padding:12px 16px; background:var(--bg-card); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:90; }
+.progress-label { display:flex; justify-content:space-between; font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:6px; }
+.progress-track { background:#ede8e1; border-radius:6px; height:10px; overflow:hidden; }
+.progress-fill { height:100%; border-radius:6px; background:linear-gradient(90deg,var(--phase1),var(--phase2),var(--phase3),var(--phase4),var(--phase5)); width:0%; transition:width .5s ease; }
+
+/* ── Tab Content Area ── */
+.tab-content { display:none; padding:12px 14px 24px; }
+.tab-content.active { display:block; }
+
+/* ── Phase Sections ── */
+.phase { margin-bottom:16px; border-radius:10px; overflow:hidden; border:1px solid var(--border); background:var(--bg-card); box-shadow:0 1px 4px var(--shadow); }
+.phase-header { display:flex; align-items:center; gap:10px; padding:14px 14px; cursor:pointer; user-select:none; transition:background .2s; }
+.phase-header:active { background:var(--accent-bg); }
+.phase-badge { display:inline-block; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:3px 8px; border-radius:4px; color:#fff; white-space:nowrap; }
+.phase-title { font-family:'Lora',Georgia,serif; font-size:1.05rem; font-weight:700; flex:1; }
+.phase-progress-mini { font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--text-muted); white-space:nowrap; }
+.phase-chevron { font-size:1.1rem; color:var(--text-muted); transition:transform .3s; }
+.phase.open .phase-chevron { transform:rotate(180deg); }
+.phase-body { display:none; padding:0 14px 14px; }
+.phase.open .phase-body { display:block; }
+
+/* ── Week Cards ── */
+.week-card { background:var(--accent-bg); border-radius:8px; padding:12px; margin-bottom:10px; position:relative; transition:opacity .3s; }
+.week-card.completed { opacity:0.6; }
+.week-card.completed .week-topic { text-decoration:line-through; }
+.week-num { font-family:'JetBrains Mono',monospace; font-size:0.75rem; font-weight:600; margin-bottom:4px; }
+.week-topic { font-weight:700; font-size:0.95rem; margin-bottom:6px; }
+.week-practice { font-size:0.88rem; color:var(--text-muted); margin-bottom:8px; line-height:1.55; }
+.week-milestone { font-size:0.82rem; background:rgba(255,255,255,0.7); border-radius:6px; padding:8px 10px; margin-bottom:10px; }
+.week-milestone strong { color:var(--accent); }
+.week-check { display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.88rem; font-weight:600; }
+.week-check input { width:20px; height:20px; accent-color:var(--check); cursor:pointer; }
+
+/* ── Resources ── */
+.resource-section { margin-top:14px; }
+.resource-section h4 { font-family:'Lora',serif; font-size:0.95rem; margin-bottom:8px; color:var(--text); }
+.resource-item { padding:8px 0; border-bottom:1px solid #ede8e1; font-size:0.88rem; line-height:1.5; }
+.resource-item:last-child { border-bottom:none; }
+.resource-item a { color:var(--link); text-decoration:underline; text-decoration-color:rgba(107,58,31,0.3); text-underline-offset:2px; font-weight:600; }
+.resource-desc { color:var(--text-muted); font-size:0.82rem; }
+
+/* ── Reference Tab ── */
+.ref-table { width:100%; border-collapse:collapse; font-size:0.85rem; background:var(--bg-card); border-radius:8px; overflow:hidden; border:1px solid var(--border); margin-bottom:16px; }
+.ref-table th { background:var(--accent); color:#fff; padding:8px 10px; text-align:left; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.04em; }
+.ref-table td { padding:8px 10px; border-bottom:1px solid #ede8e1; }
+.ref-table tr:nth-child(even) { background:var(--accent-bg); }
+
+.channel-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:12px; margin-bottom:10px; box-shadow:0 1px 3px var(--shadow); }
+.channel-card strong { font-size:0.95rem; }
+.channel-card .ch-focus { font-size:0.82rem; color:var(--text-muted); margin:4px 0; }
+.channel-card a { font-size:0.82rem; color:var(--link); }
+
+/* ── Tips Tab ── */
+.tip-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:10px; box-shadow:0 1px 3px var(--shadow); }
+.tip-card strong { color:var(--accent); }
+.closing-quote { font-family:'Lora',serif; font-style:italic; color:var(--text-muted); border-top:2px solid var(--border); margin-top:20px; padding-top:16px; font-size:0.95rem; line-height:1.8; }
+
+/* ── Practice Box ── */
+.practice-box { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:16px; box-shadow:0 1px 3px var(--shadow); }
+.practice-box h4 { font-family:'Lora',serif; font-size:0.95rem; margin-bottom:10px; }
+.practice-row { display:flex; gap:10px; align-items:baseline; padding:3px 0; }
+.practice-time { font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:var(--accent); min-width:46px; }
+
+/* ── Bottom Nav ── */
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; height:calc(var(--nav-h) + var(--safe-bottom)); padding-bottom:var(--safe-bottom); background:var(--bg-card); border-top:1px solid var(--border); display:flex; z-index:200; box-shadow:0 -2px 12px rgba(0,0,0,0.06); }
+.nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; border:none; background:none; cursor:pointer; color:var(--text-muted); font-size:0.65rem; font-weight:600; letter-spacing:0.03em; padding:6px 4px; transition:color .2s; font-family:'Source Sans 3',sans-serif; }
+.nav-btn.active { color:var(--accent); }
+.nav-btn svg { width:22px; height:22px; }
+
+/* ── Animations ── */
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.tab-content.active { animation:fadeIn .25s ease; }
+
+@media(min-width:700px) {
+  body { max-width:680px; margin:0 auto; }
+  .bottom-nav { max-width:680px; left:50%; transform:translateX(-50%); }
+}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>🎸 Guitar Roadmap</h1>
+  <div class="sub">Breaking Through the Plateau</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label"><span>Overall Progress</span><span id="prog-text">0 / 40</span></div>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+</div>
+
+<!-- ══════ TAB: PLAN ══════ -->
+<div class="tab-content active" id="tab-plan">
+
+<div class="practice-box">
+  <h4>Daily Practice (30 min)</h4>
+  <div class="practice-row"><span class="practice-time">5 min</span><span>Warm-up / review</span></div>
+  <div class="practice-row"><span class="practice-time">15 min</span><span>Current week's focus</span></div>
+  <div class="practice-row"><span class="practice-time">10 min</span><span>Free play / jam</span></div>
+</div>
+
+<div id="phases-container"></div>
+</div>
+
+<!-- ══════ TAB: RESOURCES ══════ -->
+<div class="tab-content" id="tab-resources">
+<h3 style="font-family:'Lora',serif;margin-bottom:14px;">YouTube Channels &amp; Websites</h3>
+<div id="channels-container"></div>
+
+<h3 style="font-family:'Lora',serif;margin:20px 0 10px;">Ear Training Apps</h3>
+<div class="channel-card"><strong>Functional Ear Trainer</strong><div class="ch-focus">Free (iOS/Android) — Interval recognition in musical context</div></div>
+<div class="channel-card"><strong>TonedEar</strong><div class="ch-focus">Free tier (web) — Intervals, chords, scales, progressions</div></div>
+<div class="channel-card"><strong>Perfect Ear</strong><div class="ch-focus">Free tier (iOS/Android) — Intervals, chords, rhythm exercises</div></div>
+</div>
+
+<!-- ══════ TAB: KEYS ══════ -->
+<div class="tab-content" id="tab-keys">
+<h3 style="font-family:'Lora',serif;margin-bottom:14px;">Common Bluegrass Keys</h3>
+<table class="ref-table">
+  <tr><th>Key</th><th>I</th><th>ii</th><th>iii</th><th>IV</th><th>V</th><th>vi</th><th>vii°</th></tr>
+  <tr><td><strong>G</strong></td><td>G</td><td>Am</td><td>Bm</td><td>C</td><td>D</td><td>Em</td><td>F#°</td></tr>
+  <tr><td><strong>C</strong></td><td>C</td><td>Dm</td><td>Em</td><td>F</td><td>G</td><td>Am</td><td>B°</td></tr>
+  <tr><td><strong>D</strong></td><td>D</td><td>Em</td><td>F#m</td><td>G</td><td>A</td><td>Bm</td><td>C#°</td></tr>
+  <tr><td><strong>A</strong></td><td>A</td><td>Bm</td><td>C#m</td><td>D</td><td>E</td><td>F#m</td><td>G#°</td></tr>
+  <tr><td><strong>E</strong></td><td>E</td><td>F#m</td><td>G#m</td><td>A</td><td>B</td><td>C#m</td><td>D#°</td></tr>
+</table>
+
+<h3 style="font-family:'Lora',serif;margin:20px 0 10px;">Capo Transposition Chart</h3>
+<table class="ref-table">
+  <tr><th>Capo Fret</th><th>G shapes →</th><th>C shapes →</th><th>D shapes →</th></tr>
+  <tr><td><strong>0</strong></td><td>G</td><td>C</td><td>D</td></tr>
+  <tr><td><strong>1</strong></td><td>Ab</td><td>Db</td><td>Eb</td></tr>
+  <tr><td><strong>2</strong></td><td>A</td><td>D</td><td>E</td></tr>
+  <tr><td><strong>3</strong></td><td>Bb</td><td>Eb</td><td>F</td></tr>
+  <tr><td><strong>4</strong></td><td>B</td><td>E</td><td>F#</td></tr>
+  <tr><td><strong>5</strong></td><td>C</td><td>F</td><td>G</td></tr>
+  <tr><td><strong>7</strong></td><td>D</td><td>G</td><td>A</td></tr>
+</table>
+
+<h3 style="font-family:'Lora',serif;margin:20px 0 10px;">Major Scale Formula</h3>
+<div class="tip-card" style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;text-align:center;letter-spacing:0.1em;">
+  W &nbsp; W &nbsp; H &nbsp; W &nbsp; W &nbsp; W &nbsp; H
+</div>
+
+<h3 style="font-family:'Lora',serif;margin:20px 0 10px;">Harmonized Major Scale Pattern</h3>
+<div class="tip-card" style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;text-align:center;">
+  I &nbsp; ii &nbsp; iii &nbsp; IV &nbsp; V &nbsp; vi &nbsp; vii°<br>
+  <span style="font-size:0.78rem;color:var(--text-muted);">Maj – min – min – Maj – Maj – min – dim</span>
+</div>
+</div>
+
+<!-- ══════ TAB: TIPS ══════ -->
+<div class="tab-content" id="tab-tips">
+<h3 style="font-family:'Lora',serif;margin-bottom:14px;">Staying on Track</h3>
+<div class="tip-card"><strong>Practice with a metronome.</strong> Always. Start slower than you think you need to. Speed comes from accuracy, not the other way around.</div>
+<div class="tip-card"><strong>Record yourself regularly.</strong> Even a quick phone recording once a month. You won't notice daily progress, but monthly recordings will shock you.</div>
+<div class="tip-card"><strong>Play with other people.</strong> Bluegrass is community music — jam sessions accelerate learning faster than anything. You're in the Shenandoah Valley — prime bluegrass territory. Look for local jams and festivals.</div>
+<div class="tip-card"><strong>Don't abandon your strengths.</strong> You already play well by ear with great chord knowledge. This plan adds a new layer on top of a strong foundation.</div>
+<div class="tip-card"><strong>One concept at a time.</strong> If a week's topic doesn't click, stay on it. Rushing creates shaky foundations. The goal is understanding, not speed.</div>
+
+<h3 style="font-family:'Lora',serif;margin:24px 0 14px;">Data Management</h3>
+<div class="tip-card">
+  <button onclick="resetProgress()" style="background:var(--phase4);color:#fff;border:none;padding:10px 20px;border-radius:6px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;">Reset All Progress</button>
+  <p style="font-size:0.82rem;color:var(--text-muted);margin-top:8px;">This clears all checkboxes and resets your progress to zero.</p>
+</div>
+
+<div class="closing-quote">
+  Remember: You're not starting from zero. You're a guitarist adding tools to an already solid toolkit. Every one of these concepts will click faster for you than for a complete beginner because you already have the physical skills and musical intuition. You just need the vocabulary and framework to unlock what's already inside you.
+</div>
+</div>
+
+<!-- ══════ BOTTOM NAV ══════ -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-tab="tab-plan">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/><path d="M9 14l2 2 4-4"/></svg>
+    Plan
+  </button>
+  <button class="nav-btn" data-tab="tab-resources">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+    Resources
+  </button>
+  <button class="nav-btn" data-tab="tab-keys">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/></svg>
+    Keys
+  </button>
+  <button class="nav-btn" data-tab="tab-tips">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    Tips
+  </button>
+</nav>
+
+<script>
+// ── DATA ──
+const PHASES = [
+  { id:1, title:"The Fretboard Finally Makes Sense", weeks:"1–6", color:"var(--phase1)",
+    resources:[
+      {name:"JustinGuitar — Notes on the Fretboard",url:"https://www.justinguitar.com/modules/note-trainer",desc:"Free structured approach with interactive trainer"},
+      {name:"Ry Naylor — Memorize the Fretboard (free PDF)",url:"https://www.rynaylorguitar.com/fretboardmastery",desc:"Theory-first approach with patterns and reference points"},
+      {name:"Music Theory for Guitar — Fretboard Memorization",url:"https://www.musictheoryforguitar.com/Guitar-Fretboard-Notes-Memorisation.html",desc:"5-minutes-a-day method"},
+      {name:"Fretjam — Fretboard Memorization Exercises",url:"https://www.fretjam.com/fretboard-memorization-exercises.html",desc:"Spatial memorization beyond rote learning"},
+      {name:"Anyone Can Play Guitar — Octave Shapes",url:"https://www.anyonecanplayguitar.co.uk/octave-shapes-part-1/",desc:"Two-part series on all 7 octave shapes"},
+      {name:"Hub Guitar — Fretboard Using Octaves",url:"https://hubguitar.com/fretboard/knowledge-octaves",desc:"Clean diagrams for each octave relationship"},
+    ],
+    weeks_data:[
+      {w:1,topic:"Natural notes on strings 6 & 5",practice:"Learn E and A string note names to 12th fret. Say the name out loud as you play. \"Every Adult Dog Gets Bones Eventually\" = E A D G B E.",milestone:"Name any note on strings 5 & 6 within 3 seconds"},
+      {w:2,topic:"Natural notes on strings 4, 3, 2, 1",practice:"Expand to remaining strings. Pick a random fret — name the note.",milestone:"Name any natural note on any string within 5 seconds"},
+      {w:3,topic:"Sharps, flats & chromatic scale",practice:"12-note chromatic scale. No sharp/flat between B–C and E–F. Play chromatic scale up one string naming notes.",milestone:"Name ANY note (sharps/flats included) on any string"},
+      {w:4,topic:"Octave shapes",practice:"Learn three main octave shapes (6→4, 5→3, 4→2). Use them to find the same note in different positions.",milestone:"Find any note in at least 3 places on the neck"},
+      {w:5,topic:"Root notes in your chord shapes",practice:"Identify the ROOT note in each barre and open chord you know. This is the note that names the chord.",milestone:"Point to the root in every chord you play"},
+      {w:6,topic:"Review & consolidation",practice:"Fretboard sprint: name as many notes as you can in 60 seconds. Play a song and name every note.",milestone:"Score 40+ in the fretboard sprint"},
+    ]
+  },
+  { id:2, title:"The Major Scale — Your New Best Friend", weeks:"7–14", color:"var(--phase2)",
+    resources:[
+      {name:"freeCodeCamp — Guitar Theory Course (free, 1hr)",url:"https://www.freecodecamp.org/news/guitar-theory-course-for-beginners-learn-fretboard-major-scale-and-triads/",desc:"Fretboard, major scale, and triads"},
+      {name:"Guitareo — Guide to the Major Scale",url:"https://www.guitareo.com/riff/a-guide-to-the-major-scale-on-guitar/",desc:"Video lessons from theory through application"},
+      {name:"GuitarLessons.com — Learn the Major Scale",url:"https://www.guitarlessons.com/guitar-lessons/lead-guitar-quick-start-series/learn-the-major-scale-on-guitar/",desc:"Scale diagrams and jam track"},
+      {name:"Sound Guitar Lessons — 5 Major Scale Patterns",url:"https://www.soundguitarlessons.com/blog/major-scale-guitar-patterns",desc:"Root-to-root method for all positions"},
+      {name:"Guitar Lesson World — The Major Scale",url:"https://www.guitarlessonworld.com/lessons/major-scale/",desc:"Theory, patterns, and chord connection"},
+    ],
+    weeks_data:[
+      {w:7,topic:"The major scale formula",practice:"W W H W W W H. Build a C major scale on paper, then play on one string to hear intervals.",milestone:"Build any major scale from any starting note"},
+      {w:8,topic:"G major scale — Position 1",practice:"G major in open position (frets 0–3). Compare sound to G minor pentatonic you already know.",milestone:"Play G major cleanly at 80 BPM in eighth notes"},
+      {w:9,topic:"G major scale — Position 2",practice:"Second position near fret 5. Practice connecting Position 1 and 2 by sliding between them.",milestone:"Shift between two positions smoothly"},
+      {w:10,topic:"Intervals",practice:"Root, 2nd, 3rd, 4th, 5th, 6th, 7th. Play each against the root. The 3rd makes a chord major or minor.",milestone:"Play each interval from any root"},
+      {w:11,topic:"Scale degrees & numbers",practice:"Think in numbers (1 2 3 4 5 6 7). \"Go to the 4\" = 4th degree. Play scale calling out numbers.",milestone:"Comfortable numbering degrees in G and C"},
+      {w:12,topic:"Major scale in C and D",practice:"Apply everything to C and D major. Finger patterns are the same — just shifted.",milestone:"Play scales in G, C, D in 2+ positions each"},
+      {w:13,topic:"Improvising with major scale",practice:"G major backing track on YouTube. Improvise using ONLY major scale notes. Land on chord tones.",milestone:"Improvise a melody over a backing track"},
+      {w:14,topic:"Pentatonic vs. major",practice:"Pentatonic = major minus 4th and 7th. Play side by side. Add those 2 notes into pentatonic licks.",milestone:"Blend pentatonic and major scale licks"},
+    ]
+  },
+  { id:3, title:"How Chords Are Built", weeks:"15–22", color:"var(--phase3)",
+    resources:[
+      {name:"Sound Guitar Lessons — Learn Chords (10-part)",url:"https://www.soundguitarlessons.com/blog/46",desc:"Scale theory through chord tones, 7th chords, and more"},
+      {name:"JustinGuitar — CAGED System",url:"https://www.justinguitar.com/modules/caged-system",desc:"Free structured walkthrough with exercises"},
+      {name:"Applied Guitar Theory — CAGED System",url:"https://appliedguitartheory.com/lessons/caged-guitar-theory-system/",desc:"Deep dive: CAGED to triads, arpeggios, scales"},
+      {name:"Guitar World — CAGED in 10 Min (Molly Miller)",url:"https://www.guitarworld.com/lessons/learn-the-caged-guitar-system-in-10-minutes",desc:"Quick-start video with exercises"},
+      {name:"Premier Guitar — Guide to CAGED",url:"https://www.premierguitar.com/lessons/guitarists-guide-to-caged",desc:"Diagrams showing R, 3, 5 in each shape"},
+    ],
+    weeks_data:[
+      {w:15,topic:"Triads: stacking 3rds",practice:"G-B-D = G major. Major = R 3 5, minor = R b3 5. Build triads from various roots.",milestone:"Build major and minor triads from any root"},
+      {w:16,topic:"Harmonizing the major scale",practice:"I ii iii IV V vi vii°. This tells you which chords belong in any key.",milestone:"Write all 7 chords in G, C, and D"},
+      {w:17,topic:"The I-IV-V progression",practice:"In G: G(I), C(IV), D(V). Backbone of popular music. Switch while calling numbers.",milestone:"ID the I-IV-V in 5+ songs you know"},
+      {w:18,topic:"I-IV-V-I in 3 keys",practice:"G, C, D, and A. These are common bluegrass keys. Try boom-chuck rhythm.",milestone:"Play I-IV-V-I fluently in G, C, D, A"},
+      {w:19,topic:"Adding vi and ii chords",practice:"vi = relative minor. ii-V-I is everywhere. In G: Am(ii)-D(V)-G(I).",milestone:"Play I-vi-IV-V and ii-V-I in G, C, D"},
+      {w:20,topic:"Dominant 7th chords",practice:"V chord → dominant 7th (D7 in key of G). R 3 5 b7. Tension resolving to I.",milestone:"Know shapes for G7, C7, D7, A7, E7"},
+      {w:21,topic:"CAGED system intro",practice:"5 open shapes move up neck as barres. Each contains a scale pattern.",milestone:"Play G using all 5 CAGED shapes"},
+      {w:22,topic:"Analyze songs you know",practice:"5 songs → Roman numerals. Identify key. Notice repeating patterns.",milestone:"Analyze any simple song into Roman numerals"},
+    ]
+  },
+  { id:4, title:"Bluegrass Foundations", weeks:"23–30", color:"var(--phase4)",
+    resources:[
+      {name:"Bryan Sutton — Boom Chuck Style",url:"https://artistworks.medium.com/bluegrass-guitar-lesson-the-boom-chuck-style-sound-with-bryan-sutton-a7534c2544fe",desc:"10-time IBMA Guitar Player of the Year"},
+      {name:"Alex Graf — Boom Chuck Basics",url:"https://alexgrafmusic.com/blogs/video-lessons-sample/posts/7338815/rhythm-lesson-i-boom-chuck-basics",desc:"Technique, context, and groove"},
+      {name:"Country Guitar Online — 10 G Run Variations",url:"https://countryguitaronline.com/ten-different-ways-to-play-the-bluegrass-g-run/",desc:"Free tab + video from basic to advanced"},
+      {name:"Acoustic Guitar — Cross-Picking 101 (Molly Tuttle)",url:"https://acousticguitar.com/crosspicking-101-a-private-bluegrass-lesson-with-molly-tuttle-video/",desc:"Exercises + arrangements of Wildwood Flower"},
+      {name:"Tunefox — Bluegrass Rhythm Guitar 101",url:"https://www.tunefox.com/lessons/bluegrass-rhythm-guitar-101/",desc:"Interactive tab with speed control"},
+      {name:"Lessons With Marcel",url:"https://lessonswithmarcel.com/",desc:"Modern bluegrass flatpicking — tons of free content"},
+    ],
+    weeks_data:[
+      {w:23,topic:"Boom-chuck rhythm",practice:"Bass note on 1 & 3, chord strum on 2 & 4. Use metronome.",milestone:"Clean boom-chuck at 120 BPM through I-IV-V in G"},
+      {w:24,topic:"Bass runs between chords",practice:"Walk up G-A-B to C, or D-C-B to G. These are major scale fragments.",milestone:"Connect I-IV and V-I with smooth bass runs"},
+      {w:25,topic:"The G run",practice:"Classic bluegrass lick ending thousands of songs. Learn it, transpose to other keys.",milestone:"Play the G run cleanly and in time"},
+      {w:26,topic:"Carter-style (melody + bass)",practice:"Melody on bass strings, strum chords on treble. Start with Wildwood Flower.",milestone:"One tune Carter-style start to finish"},
+      {w:27,topic:"Cross-picking basics",practice:"Arpeggiate across 3 strings in rolling pattern (like banjo rolls). Slow tempo.",milestone:"Cross-pick a basic pattern at 100 BPM"},
+      {w:28,topic:"Chord tones for soloing",practice:"Target R, 3, 5 of each chord. Makes solos follow the changes.",milestone:"Outline chord tones through I-IV-V while soloing"},
+      {w:29,topic:"Bluegrass licks in G",practice:"Learn 5–7 classic licks. Insert them into improv over a backing track.",milestone:"5+ licks memorized and usable in context"},
+      {w:30,topic:"Full bluegrass jam",practice:"Rhythm → solo break → back to rhythm over a jam track.",milestone:"Play rhythm and take a solo over a jam track"},
+    ]
+  },
+  { id:5, title:"Deepening Your Musicianship", weeks:"31–40", color:"var(--phase5)",
+    resources:[
+      {name:"Premier Guitar — Nashville Number System",url:"https://www.premierguitar.com/lessons/chords/nashville-number-system",desc:"How numbers replace chord names"},
+      {name:"Sweetwater — Nashville Numbers Demystified",url:"https://www.sweetwater.com/insync/the-nashville-number-system-demystified/",desc:"Practical chart-reading examples"},
+      {name:"FaChords — Nashville Number System",url:"https://www.fachords.com/nashville-number-system/",desc:"Interactive guide across all keys"},
+      {name:"Peghead Nation — Intermediate Flatpicking",url:"https://www.pegheadnation.com/string-school/courses/intermediate-flatpicking-guitar",desc:"Fiddle tunes, picking, fretboard navigation"},
+      {name:"Acoustic Guitar — Salt Creek Lesson",url:"https://acousticguitar.com/salt-creek-bluegrass-flatpicking-guitar-lesson/",desc:"Playing up the neck in bluegrass style"},
+    ],
+    weeks_data:[
+      {w:31,topic:"Nashville Number System",practice:"\"1-4-5 in G\" = G-C-D. Convert songs to numbers. Play in any key instantly.",milestone:"Follow a song in numbers in 3 different keys"},
+      {w:32,topic:"Transposing with a capo",practice:"Capo 2 + G shapes = key of A. Learn the capo chart.",milestone:"Capo for any common bluegrass key"},
+      {w:33,topic:"Minor keys & relative minors",practice:"G major → E minor (same notes). Practice natural minor scale.",milestone:"Play Em & Am; identify relative majors"},
+      {w:34,topic:"Modes — introduction",practice:"Ionian (major), Aeolian (minor). Learn Mixolydian (major w/ b7) — the bluegrass sound.",milestone:"Play G Mixolydian; hear the difference"},
+      {w:35,topic:"Ear training: intervals",practice:"Functional Ear Trainer app. Put names to what you already hear.",milestone:"ID major 3rd, perfect 5th, octave by ear"},
+      {w:36,topic:"Ear training: chord quality",practice:"Hear major vs minor vs dom7 vs maj7. Play back to back.",milestone:"ID major vs minor vs dom7 by ear"},
+      {w:37,topic:"Double stops",practice:"Two notes simultaneously — 3rds and 6ths along the major scale.",milestone:"Double-stop 3rds & 6ths up the neck in G"},
+      {w:38,topic:"Connecting all 5 CAGED positions",practice:"Major scale across all 5 positions. Move freely across the neck.",milestone:"Improvise major scale across full fretboard"},
+      {w:39,topic:"Learn a full bluegrass tune",practice:"Blackberry Blossom, Salt Creek, or Whiskey Before Breakfast. Melody + analysis + solo.",milestone:"Perform: rhythm, melody, and solo on one tune"},
+      {w:40,topic:"Self-assessment",practice:"Record yourself. Compare to before. Write strengths and growth areas.",milestone:"Honest recording + next goals identified"},
+    ]
+  }
+];
+
+const CHANNELS = [
+  {name:"JustinGuitar",focus:"Comprehensive free lessons, beginner–advanced",url:"https://www.justinguitar.com"},
+  {name:"Lessons With Marcel",focus:"Modern bluegrass flatpicking (Mon/Wed/Fri)",url:"https://www.youtube.com/@LessonsWithMarcel"},
+  {name:"Country Guitar Online",focus:"Bluegrass & country with free tab",url:"https://countryguitaronline.com"},
+  {name:"Brandon Johnson Guitar",focus:"Bluegrass flatpicking, runs, licks",url:"https://brandonjohnsonguitar.com"},
+  {name:"Peghead Nation",focus:"Bluegrass/roots multi-instrument (subscription)",url:"https://www.pegheadnation.com"},
+  {name:"ArtistWorks / Bryan Sutton",focus:"World-class bluegrass guitar (subscription)",url:"https://artistworks.com"},
+  {name:"Acoustic Guitar Magazine",focus:"Lessons, reviews, technique",url:"https://acousticguitar.com"},
+  {name:"Tunefox",focus:"Interactive bluegrass tab with speed control",url:"https://www.tunefox.com"},
+  {name:"Fretjam",focus:"Free theory, scales, fretboard knowledge",url:"https://www.fretjam.com"},
+  {name:"Sound Guitar Lessons",focus:"Theory-driven chord/scale series",url:"https://www.soundguitarlessons.com"},
+  {name:"Active Melody",focus:"Acoustic fingerpicking & flatpicking",url:"https://www.activemelody.com"},
+  {name:"Roberto Dalla Vecchia",focus:"Flatpicking technique & fiddle tunes",url:"https://www.robertodallavecchia.com"},
+];
+
+// ── STORAGE ──
+function loadProgress(){ try{return JSON.parse(localStorage.getItem('guitar-progress'))||{}}catch(e){return{}} }
+function saveProgress(p){ localStorage.setItem('guitar-progress',JSON.stringify(p)); }
+function loadOpen(){ try{return JSON.parse(localStorage.getItem('guitar-open'))||{}}catch(e){return{}} }
+function saveOpen(o){ localStorage.setItem('guitar-open',JSON.stringify(o)); }
+
+// ── RENDER ──
+function render(){
+  const progress = loadProgress();
+  const openState = loadOpen();
+  const container = document.getElementById('phases-container');
+  container.innerHTML = '';
+
+  PHASES.forEach(phase => {
+    const completedCount = phase.weeks_data.filter(w => progress[w.w]).length;
+    const total = phase.weeks_data.length;
+    const isOpen = openState[phase.id] !== undefined ? openState[phase.id] : false;
+
+    const div = document.createElement('div');
+    div.className = 'phase' + (isOpen ? ' open' : '');
+    div.innerHTML = `
+      <div class="phase-header" data-phase="${phase.id}">
+        <span class="phase-badge" style="background:${phase.color}">Phase ${phase.id}</span>
+        <span class="phase-title" style="color:${phase.color}">${phase.title}</span>
+        <span class="phase-progress-mini">${completedCount}/${total}</span>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <p style="font-family:'Lora',serif;font-style:italic;color:var(--text-muted);font-size:0.9rem;margin-bottom:12px;">Weeks ${phase.weeks}</p>
+        ${phase.weeks_data.map(w => `
+          <div class="week-card ${progress[w.w]?'completed':''}">
+            <div class="week-num" style="color:${phase.color}">WEEK ${w.w}</div>
+            <div class="week-topic">${w.topic}</div>
+            <div class="week-practice">${w.practice}</div>
+            <div class="week-milestone"><strong>Milestone:</strong> ${w.milestone}</div>
+            <label class="week-check">
+              <input type="checkbox" data-week="${w.w}" ${progress[w.w]?'checked':''}>
+              <span>${progress[w.w]?'Completed ✓':'Mark complete'}</span>
+            </label>
+          </div>
+        `).join('')}
+        <div class="resource-section">
+          <h4>📚 Resources</h4>
+          ${phase.resources.map(r => `
+            <div class="resource-item">
+              <a href="${r.url}" target="_blank" rel="noopener">${r.name}</a><br>
+              <span class="resource-desc">${r.desc}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  // Channels
+  const chContainer = document.getElementById('channels-container');
+  chContainer.innerHTML = CHANNELS.map(c => `
+    <div class="channel-card">
+      <strong>${c.name}</strong>
+      <div class="ch-focus">${c.focus}</div>
+      <a href="${c.url}" target="_blank" rel="noopener">${c.url.replace('https://www.','').replace('https://','')}</a>
+    </div>
+  `).join('');
+
+  updateProgress();
+  bindEvents();
+}
+
+function updateProgress(){
+  const progress = loadProgress();
+  const total = 40;
+  const done = Object.values(progress).filter(Boolean).length;
+  const pct = (done/total)*100;
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-text').textContent = done+' / '+total;
+}
+
+function bindEvents(){
+  // Phase toggles
+  document.querySelectorAll('.phase-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const id = h.dataset.phase;
+      const phase = h.parentElement;
+      phase.classList.toggle('open');
+      const openState = loadOpen();
+      openState[id] = phase.classList.contains('open');
+      saveOpen(openState);
+    });
+  });
+
+  // Checkboxes
+  document.querySelectorAll('.week-check input').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const w = cb.dataset.week;
+      const progress = loadProgress();
+      progress[w] = cb.checked;
+      saveProgress(progress);
+      const card = cb.closest('.week-card');
+      card.classList.toggle('completed', cb.checked);
+      cb.parentElement.querySelector('span').textContent = cb.checked ? 'Completed ✓' : 'Mark complete';
+      updateProgress();
+    });
+  });
+}
+
+function resetProgress(){
+  if(confirm('Reset all progress? This cannot be undone.')){
+    localStorage.removeItem('guitar-progress');
+    localStorage.removeItem('guitar-open');
+    render();
+  }
+}
+
+// ── NAV ──
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ── SERVICE WORKER ──
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+
+// ── INIT ──
+render();
+</script>
+</body>
+</html>
