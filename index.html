@@ -17,6 +17,7 @@
   --accent: #8b4513; --accent-light: #c4813a; --accent-bg: #f5ede3;
   --border: #d9cfc2; --link: #6b3a1f; --shadow: rgba(44,36,22,0.08);
   --phase1: #2e6b50; --phase2: #4a6fa5; --phase3: #8b5e3c; --phase4: #7b2d3e; --phase5: #4a4a7a;
+  --phase6: #2a7560; --phase7: #7a3520; --phase8: #3b2d7a;
   --check: #3a8a5c; --nav-h: 56px; --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -31,7 +32,7 @@ body { font-family:'Source Sans 3',system-ui,sans-serif; background:var(--bg); c
 .progress-wrap { padding:12px 16px; background:var(--bg-card); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:90; }
 .progress-label { display:flex; justify-content:space-between; font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:6px; }
 .progress-track { background:#ede8e1; border-radius:6px; height:10px; overflow:hidden; }
-.progress-fill { height:100%; border-radius:6px; background:linear-gradient(90deg,var(--phase1),var(--phase2),var(--phase3),var(--phase4),var(--phase5)); width:0%; transition:width .5s ease; }
+.progress-fill { height:100%; border-radius:6px; background:linear-gradient(90deg,var(--phase1),var(--phase2),var(--phase3),var(--phase4),var(--phase5),var(--phase6),var(--phase7),var(--phase8)); width:0%; transition:width .5s ease; }
 
 /* ── Tab Content Area ── */
 .tab-content { display:none; padding:12px 14px 24px; }
@@ -63,7 +64,10 @@ body { font-family:'Source Sans 3',system-ui,sans-serif; background:var(--bg); c
 
 /* ── Resources ── */
 .resource-section { margin-top:14px; }
-.resource-section h4 { font-family:'Lora',serif; font-size:0.95rem; margin-bottom:8px; color:var(--text); }
+.resource-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.resource-header h4 { font-family:'Lora',serif; font-size:0.95rem; color:var(--text); }
+.edit-links-btn { background:none; border:1px solid var(--border); color:var(--text-muted); font-size:0.75rem; padding:3px 9px; border-radius:5px; cursor:pointer; font-family:'Source Sans 3',sans-serif; display:flex; align-items:center; gap:4px; }
+.edit-links-btn:active { background:var(--accent-bg); }
 .resource-item { padding:8px 0; border-bottom:1px solid #ede8e1; font-size:0.88rem; line-height:1.5; }
 .resource-item:last-child { border-bottom:none; }
 .resource-item a { color:var(--link); text-decoration:underline; text-decoration-color:rgba(107,58,31,0.3); text-underline-offset:2px; font-weight:600; }
@@ -97,6 +101,25 @@ body { font-family:'Source Sans 3',system-ui,sans-serif; background:var(--bg); c
 .nav-btn.active { color:var(--accent); }
 .nav-btn svg { width:22px; height:22px; }
 
+/* ── Modal ── */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:500; display:flex; align-items:flex-end; justify-content:center; }
+.modal-box { background:var(--bg-card); border-radius:16px 16px 0 0; width:100%; max-width:680px; max-height:88vh; display:flex; flex-direction:column; overflow:hidden; }
+.modal-header { display:flex; align-items:center; justify-content:space-between; padding:16px 16px 12px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.modal-header h3 { font-family:'Lora',Georgia,serif; font-size:1rem; font-weight:700; }
+.modal-close { background:none; border:none; font-size:1.3rem; color:var(--text-muted); cursor:pointer; padding:2px 8px; line-height:1; }
+.modal-body { flex:1; overflow-y:auto; padding:14px 16px 4px; -webkit-overflow-scrolling:touch; }
+.modal-link-row { background:var(--accent-bg); border-radius:8px; padding:10px; margin-bottom:10px; display:flex; gap:8px; align-items:flex-start; }
+.modal-link-fields { flex:1; display:flex; flex-direction:column; gap:6px; }
+.modal-input { width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-family:'Source Sans 3',sans-serif; font-size:0.85rem; background:var(--bg-card); color:var(--text); -webkit-appearance:none; }
+.modal-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 2px rgba(139,69,19,0.15); }
+.modal-delete-btn { background:none; border:none; color:var(--text-muted); font-size:1.1rem; cursor:pointer; padding:4px; line-height:1; flex-shrink:0; margin-top:2px; }
+.modal-delete-btn:active { color:var(--phase4); }
+.modal-add-btn { width:100%; background:var(--accent-bg); border:1px dashed var(--border); color:var(--accent); padding:11px; border-radius:8px; font-size:0.88rem; font-weight:600; cursor:pointer; font-family:'Source Sans 3',sans-serif; margin:4px 0 14px; }
+.modal-footer { padding:12px 16px; border-top:1px solid var(--border); display:flex; gap:10px; flex-shrink:0; }
+.btn-primary { flex:1; background:var(--accent); color:#fff; border:none; padding:12px; border-radius:8px; font-size:0.9rem; font-weight:600; cursor:pointer; font-family:'Source Sans 3',sans-serif; }
+.btn-secondary { flex:1; background:var(--bg); color:var(--text); border:1px solid var(--border); padding:12px; border-radius:8px; font-size:0.9rem; font-weight:600; cursor:pointer; font-family:'Source Sans 3',sans-serif; }
+.btn-reset-links { background:none; border:none; color:var(--text-muted); font-size:0.78rem; text-decoration:underline; cursor:pointer; font-family:'Source Sans 3',sans-serif; padding:0 4px; }
+
 /* ── Animations ── */
 @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 .tab-content.active { animation:fadeIn .25s ease; }
@@ -104,6 +127,7 @@ body { font-family:'Source Sans 3',system-ui,sans-serif; background:var(--bg); c
 @media(min-width:700px) {
   body { max-width:680px; margin:0 auto; }
   .bottom-nav { max-width:680px; left:50%; transform:translateX(-50%); }
+  .modal-box { border-radius:12px; margin-bottom:40px; }
 }
 </style>
 </head>
@@ -115,7 +139,7 @@ body { font-family:'Source Sans 3',system-ui,sans-serif; background:var(--bg); c
 </div>
 
 <div class="progress-wrap">
-  <div class="progress-label"><span>Overall Progress</span><span id="prog-text">0 / 40</span></div>
+  <div class="progress-label"><span>Overall Progress</span><span id="prog-text">0 / 64</span></div>
   <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
 </div>
 
@@ -167,9 +191,13 @@ body { font-family:'Source Sans 3',system-ui,sans-serif; background:var(--bg); c
   <tr><td><strong>7</strong></td><td>D</td><td>G</td><td>A</td></tr>
 </table>
 
-<h3 style="font-family:'Lora',serif;margin:20px 0 10px;">Major Scale Formula</h3>
-<div class="tip-card" style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;text-align:center;letter-spacing:0.1em;">
-  W &nbsp; W &nbsp; H &nbsp; W &nbsp; W &nbsp; W &nbsp; H
+<h3 style="font-family:'Lora',serif;margin:20px 0 10px;">Scale Formulas</h3>
+<div class="tip-card" style="font-size:0.88rem;line-height:2;">
+  <div><strong style="font-family:'JetBrains Mono',monospace;color:var(--phase2);">Major</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; W W H W W W H &nbsp; → 1 2 3 4 5 6 7</div>
+  <div><strong style="font-family:'JetBrains Mono',monospace;color:var(--phase5);">Natural Minor</strong> &nbsp;&nbsp;&nbsp; W H W W H W W &nbsp; → 1 2 b3 4 5 b6 b7</div>
+  <div><strong style="font-family:'JetBrains Mono',monospace;color:var(--phase6);">Major Pent.</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5 notes &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; → 1 2 3 5 6</div>
+  <div><strong style="font-family:'JetBrains Mono',monospace;color:var(--phase6);">Minor Pent.</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5 notes &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; → 1 b3 4 5 b7</div>
+  <div><strong style="font-family:'JetBrains Mono',monospace;color:var(--phase7);">Blues Scale</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Minor pent. + b5 &nbsp; → 1 b3 4 b5 5 b7</div>
 </div>
 
 <h3 style="font-family:'Lora',serif;margin:20px 0 10px;">Harmonized Major Scale Pattern</h3>
@@ -177,6 +205,14 @@ body { font-family:'Source Sans 3',system-ui,sans-serif; background:var(--bg); c
   I &nbsp; ii &nbsp; iii &nbsp; IV &nbsp; V &nbsp; vi &nbsp; vii°<br>
   <span style="font-size:0.78rem;color:var(--text-muted);">Maj – min – min – Maj – Maj – min – dim</span>
 </div>
+
+<h3 style="font-family:'Lora',serif;margin:20px 0 10px;">Open Tunings Reference</h3>
+<table class="ref-table">
+  <tr><th>Tuning</th><th>String 6</th><th>String 5</th><th>String 4</th><th>String 3</th><th>String 2</th><th>String 1</th></tr>
+  <tr><td><strong>Standard</strong></td><td>E</td><td>A</td><td>D</td><td>G</td><td>B</td><td>E</td></tr>
+  <tr><td><strong>Open G</strong></td><td>D</td><td>G</td><td>D</td><td>G</td><td>B</td><td>D</td></tr>
+  <tr><td><strong>Open D</strong></td><td>D</td><td>A</td><td>D</td><td>F#</td><td>A</td><td>D</td></tr>
+</table>
 </div>
 
 <!-- ══════ TAB: TIPS ══════ -->
@@ -187,11 +223,12 @@ body { font-family:'Source Sans 3',system-ui,sans-serif; background:var(--bg); c
 <div class="tip-card"><strong>Play with other people.</strong> Bluegrass is community music — jam sessions accelerate learning faster than anything. You're in the Shenandoah Valley — prime bluegrass territory. Look for local jams and festivals.</div>
 <div class="tip-card"><strong>Don't abandon your strengths.</strong> You already play well by ear with great chord knowledge. This plan adds a new layer on top of a strong foundation.</div>
 <div class="tip-card"><strong>One concept at a time.</strong> If a week's topic doesn't click, stay on it. Rushing creates shaky foundations. The goal is understanding, not speed.</div>
+<div class="tip-card"><strong>Editing links.</strong> Each phase's Resources section has an Edit button. Tap it to add your own links, fix broken ones, or remove anything that isn't working for you. Your changes are saved on your device.</div>
 
 <h3 style="font-family:'Lora',serif;margin:24px 0 14px;">Data Management</h3>
 <div class="tip-card">
   <button onclick="resetProgress()" style="background:var(--phase4);color:#fff;border:none;padding:10px 20px;border-radius:6px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;">Reset All Progress</button>
-  <p style="font-size:0.82rem;color:var(--text-muted);margin-top:8px;">This clears all checkboxes and resets your progress to zero.</p>
+  <p style="font-size:0.82rem;color:var(--text-muted);margin-top:8px;">This clears all checkboxes and resets your progress to zero. Custom links are preserved.</p>
 </div>
 
 <div class="closing-quote">
@@ -218,6 +255,24 @@ body { font-family:'Source Sans 3',system-ui,sans-serif; background:var(--bg); c
     Tips
   </button>
 </nav>
+
+<!-- ══════ LINK EDITOR MODAL ══════ -->
+<div id="link-modal" class="modal-overlay" style="display:none" onclick="handleModalOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modal-title">Edit Links</h3>
+      <button class="modal-close" onclick="closeLinkEditor()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-links-list"></div>
+    <div style="padding:0 16px">
+      <button class="modal-add-btn" onclick="addLink()">+ Add Link</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="resetLinksToDefault()">Reset to defaults</button>
+      <button class="btn-primary" onclick="saveLinkEditor()">Save</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ── DATA ──
@@ -318,6 +373,63 @@ const PHASES = [
       {w:39,topic:"Learn a full bluegrass tune",practice:"Blackberry Blossom, Salt Creek, or Whiskey Before Breakfast. Melody + analysis + solo.",milestone:"Perform: rhythm, melody, and solo on one tune"},
       {w:40,topic:"Self-assessment",practice:"Record yourself. Compare to before. Write strengths and growth areas.",milestone:"Honest recording + next goals identified"},
     ]
+  },
+  { id:6, title:"Scale Mastery", weeks:"41–50", color:"var(--phase6)",
+    resources:[
+      {name:"JustinGuitar — Minor Pentatonic Scale",url:"https://www.justinguitar.com/modules/pentatonic-scale",desc:"All 5 positions with exercises and jam tracks"},
+      {name:"Fretjam — Blues Scale Guide",url:"https://www.fretjam.com/blues-scale-guitar.html",desc:"b5 blue note positions, licks, and application"},
+      {name:"Guitareo — Major Pentatonic Scale",url:"https://www.guitareo.com/riff/major-pentatonic-scale-guitar/",desc:"Country and bluegrass application of major pentatonic"},
+      {name:"JustinGuitar — Natural Minor Scale",url:"https://www.justinguitar.com/modules/natural-minor-scale",desc:"Aeolian mode in all 5 positions with practice exercises"},
+      {name:"Sound Guitar Lessons — Choosing the Right Scale",url:"https://www.soundguitarlessons.com/blog/guitar-scales",desc:"Which scale fits which chord and musical context"},
+    ],
+    weeks_data:[
+      {w:41,topic:"Minor pentatonic — all 5 positions",practice:"You already improvise with pentatonic. Now formalize it. Learn all 5 box positions starting with Position 1 (root on 6th string) and Position 2. Connect them using the octave shapes from Phase 1.",milestone:"Play all 5 minor pentatonic positions in G from memory"},
+      {w:42,topic:"Minor pentatonic — phrasing & expression",practice:"Bends (whole step, half step), vibrato, slides, hammer-ons/pull-offs. These articulations are what make pentatonic licks sound musical, not just scale runs. Practice each technique in isolation first, then combine.",milestone:"Play a 16-bar solo in positions 1 & 2 using at least 3 expressive techniques"},
+      {w:43,topic:"Blues scale — the b5 blue note",practice:"Minor pentatonic + the b5 (flat 5th). In G: add C# between C and D. Play it and hear the tension and 'cry' in that note. BB King, SRV, Clapton — that note IS the blues sound.",milestone:"Play blues scale in G in positions 1 & 2 cleanly and identify the b5 by ear"},
+      {w:44,topic:"Blues scale — licks & call and response",practice:"Learn 3 classic blues licks using the b5 as a passing tone. Structure your phrases as question (call) and answer (response). Record yourself over a slow 12-bar blues backing track.",milestone:"3 blues licks memorized; improvise call & response phrasing over a slow blues"},
+      {w:45,topic:"Major pentatonic — formula and feel",practice:"1, 2, 3, 5, 6 — the bright, happy pentatonic. In G: G, A, B, D, E. This is country, bluegrass, and gospel. Compare it back-to-back with minor pentatonic over the same G chord — same 5 notes but rooted differently.",milestone:"Play G major pentatonic in 2 positions and clearly hear the country vs blues contrast"},
+      {w:46,topic:"Major vs minor pentatonic — the connection",practice:"G major pentatonic = E minor pentatonic. Identical notes, different root emphasis. Practice deliberately shifting between major and minor pentatonic feeling over the same G backing track. The root note you resolve to tells the story.",milestone:"Shift between major and minor pentatonic feel over the same backing track"},
+      {w:47,topic:"Natural minor scale (Aeolian)",practice:"W-H-W-W-H-W-W formula. The full 7-note minor scale. A natural minor uses the same notes as C major. Practice E natural minor and A natural minor — both common in bluegrass and folk.",milestone:"Play E and A natural minor scales in at least 2 positions each"},
+      {w:48,topic:"Minor key chord progressions",practice:"i-iv-V7 is the core minor key progression. In Am: Am-Dm-E7. The major V7 chord creates strong tension that resolves beautifully to the minor i. Play and analyze 3 minor-key songs you know by ear.",milestone:"Play Am-Dm-E7 fluently; identify minor key progressions in songs by ear"},
+      {w:49,topic:"Scale choice over chord changes",practice:"Over a I7-IV7-V7 blues: use blues scale. Over a major key song: major pentatonic. Over a minor key: natural minor + minor pentatonic. Practice switching scales mid-song to follow chord changes.",milestone:"Confidently switch scales to match chord type over a backing track with mixed chords"},
+      {w:50,topic:"Full scale integration jam",practice:"30-minute jam session rotating through: slow blues (blues scale), G major key (major pentatonic + major scale), minor key (natural minor + minor pentatonic). Record it and listen back critically.",milestone:"Recorded 30-min jam demonstrating confident use of all 5 scales in context"},
+    ]
+  },
+  { id:7, title:"Slide Guitar & Open Tunings", weeks:"51–58", color:"var(--phase7)",
+    resources:[
+      {name:"Acoustic Guitar — Slide Guitar for Beginners",url:"https://acousticguitar.com/slide-guitar-the-basics/",desc:"Gear selection, hand position, intonation, and muting fundamentals"},
+      {name:"JustinGuitar — Open G Tuning",url:"https://www.justinguitar.com/guitar-lessons/open-g-tuning-bg-1510",desc:"Most popular open tuning for slide — shapes, chords, and application"},
+      {name:"Acoustic Guitar — Open Tunings Guide",url:"https://acousticguitar.com/open-tunings/",desc:"Open D vs Open G — history, chord shapes, and player profiles"},
+      {name:"Country Guitar Online — Slide Guitar Licks",url:"https://countryguitaronline.com/",desc:"Bluegrass-adjacent slide technique and licks with tab"},
+      {name:"TrueFire — Slide Guitar Lessons",url:"https://truefire.com/blues-guitar-lessons/slide-guitar/",desc:"Structured slide curriculum from standard tuning through open tunings"},
+    ],
+    weeks_data:[
+      {w:51,topic:"Slide fundamentals — gear and technique",practice:"Choose your slide: glass for warm/smooth tone, metal for bright/sustained tone. Fit on ring or pinky. Position it directly over the fret wire (not behind it like fretting). Muting is critical: fretting-hand fingers lightly rest behind the slide, picking-hand palm controls sympathetic string noise.",milestone:"Play clean single-note lines on strings 1–3 with no buzz or unintended ringing"},
+      {w:52,topic:"Slide in standard tuning",practice:"No retuning — start here. Apply slide to minor pentatonic patterns you already know. Slide guitar is mostly about intonation and vibrato. Slow down and aim for notes precisely. Vibrato = subtle side-to-side motion directly over the fret.",milestone:"Play G minor pentatonic melody with slide in standard tuning with clean intonation"},
+      {w:53,topic:"Open G tuning — DGDGBD",practice:"Retune: string 6→D, string 5→G (down one step), strings 4-3-2 stay the same, string 1→D. Strum open and you have a G major chord. Barre at fret 5 = C, fret 7 = D. Keith Richards, Robert Johnson, Ry Cooder all live here.",milestone:"Play I-IV-V in G using full barre slides in Open G; strum cleanly without buzz"},
+      {w:54,topic:"Open G — Delta blues and melody",practice:"Single-note slide melody on strings 1–3, bass thumb hits on strings 4–6. Learn a simple Delta blues head — Crossroads, In My Time of Dying, or See See Rider. Let open strings ring freely between phrases for atmosphere.",milestone:"Play a complete 12-bar blues head in Open G with slide melody and bass notes"},
+      {w:55,topic:"Open D tuning — DADF#AD",practice:"Retune: string 6→D (down 2 steps), string 3→F#, string 2→A, string 1→D. Strings 5 and 4 stay the same. Open strum = D major chord. Barre at 5=G, 7=A. Compare the feel to Open G — slightly darker, more resonant.",milestone:"Play I-IV-V in Open D; compare the tone and feel to Open G tuning"},
+      {w:56,topic:"Open D — full song arrangement",practice:"Arrange one complete song in Open D: intro, melody, chord sections, and a clear ending. Wildwood Flower, Freight Train, or Bottleneck Blues adapt well. Mix slide melody with occasional strummed chords for texture.",milestone:"Perform one complete song in Open D from start to finish"},
+      {w:57,topic:"Combining slide and fretted playing",practice:"In standard or Open G: play slide for melodic phrases, set slide down for chord passages or scale runs. The fluid transition between the two is the skill. Practice putting slide on/off without breaking rhythm or losing your place.",milestone:"Play a 16-bar piece that fluidly alternates slide melody with fretted chords"},
+      {w:58,topic:"Full slide performance",practice:"Choose your preferred tuning. Arrange and perform a complete song — melody, rhythm, at least one solo break, and a clear outro. Record it. Evaluate intonation, vibrato consistency, muting, and overall tone.",milestone:"Recorded full slide performance; identify 2 specific areas for continued development"},
+    ]
+  },
+  { id:8, title:"Chord Melody & Arrangement", weeks:"59–64", color:"var(--phase8)",
+    resources:[
+      {name:"Active Melody — Chord Melody for Guitar",url:"https://www.activemelody.com/chord-melody",desc:"Acoustic chord melody approach with step-by-step video lessons"},
+      {name:"JustinGuitar — Chord Melody",url:"https://www.justinguitar.com/modules/chord-melody",desc:"Structured method for building your first arrangements"},
+      {name:"Acoustic Guitar — Chord Melody Arranging",url:"https://acousticguitar.com/chord-melody-arranging-for-guitar/",desc:"Harmonization, voice leading, and arrangement techniques"},
+      {name:"Guitar World — Chord Melody Basics",url:"https://www.guitarworld.com/lessons/chord-melody-basics",desc:"Voice leading fundamentals with notation and tab examples"},
+      {name:"Fingerstyle 365",url:"https://fingerstyle365.com/",desc:"Solo guitar arrangements emphasizing arrangement and technique"},
+    ],
+    weeks_data:[
+      {w:59,topic:"What is chord melody? Voice leading basics",practice:"Chord melody = melody note on top with chord harmony below. The melody note IS part of the chord — root, 3rd, 5th, or 7th. Play a C chord: the top note is E (the 3rd). Now find a chord where a G melody note sits on top while the bass changes below it. That's voice leading.",milestone:"Play a simple 4-bar melody with a supporting chord under every melody note"},
+      {w:60,topic:"Harmonizing a melody",practice:"Take a simple melody you know — Amazing Grace or Will the Circle Be Unbroken. Identify what scale degree each note is. Find a chord that contains that note on top. Work through it one bar at a time. Chord inversions are essential here.",milestone:"Harmonize 8 bars of a simple melody with appropriate chord voicings"},
+      {w:61,topic:"Chord inversions for smooth voice leading",practice:"Root-position chords cause big jumps. Inversions keep the melody on top and the bass moving smoothly. G/B (B in bass) walks the bass line. D/F# leads smoothly back to G. Practice holding a melody note while the bass steps below it.",milestone:"Arrange a 4-bar phrase using inversions so melody stays on top and bass moves in steps"},
+      {w:62,topic:"First full chord melody arrangement",practice:"Choose a song with a memorable melody: Wildwood Flower, House of the Rising Sun, or Blackberry Blossom. Arrange it measure by measure — don't rush to the end. Record each section before moving forward. This week is about patience.",milestone:"Play your first complete chord melody arrangement start to finish at a slow, comfortable tempo"},
+      {w:63,topic:"Arrangement techniques — dynamics and texture",practice:"Not every note needs a full chord. Mix: melody-only single notes, bass + melody without inner voices, full chord hits on strong beats, and scalar runs connecting phrases. Varying the texture is what makes a solo arrangement breathe and feel orchestrated.",milestone:"Re-arrange a previous piece using at least 3 different textural approaches within the same song"},
+      {w:64,topic:"Full solo guitar performance",practice:"Polish one complete chord melody arrangement. Add an intro (the melody simply stated) and a clear cadential ending. Think of this as a performance piece — something you could play at a campfire or open mic. Record it with care.",milestone:"Recorded, polished solo guitar arrangement — your first complete original arrangement"},
+    ]
   }
 ];
 
@@ -332,15 +444,28 @@ const CHANNELS = [
   {name:"Tunefox",focus:"Interactive bluegrass tab with speed control",url:"https://www.tunefox.com"},
   {name:"Fretjam",focus:"Free theory, scales, fretboard knowledge",url:"https://www.fretjam.com"},
   {name:"Sound Guitar Lessons",focus:"Theory-driven chord/scale series",url:"https://www.soundguitarlessons.com"},
-  {name:"Active Melody",focus:"Acoustic fingerpicking & flatpicking",url:"https://www.activemelody.com"},
+  {name:"Active Melody",focus:"Acoustic fingerpicking, chord melody & flatpicking",url:"https://www.activemelody.com"},
   {name:"Roberto Dalla Vecchia",focus:"Flatpicking technique & fiddle tunes",url:"https://www.robertodallavecchia.com"},
+  {name:"TrueFire",focus:"Slide guitar, blues, and advanced technique (subscription)",url:"https://truefire.com"},
+  {name:"Fingerstyle 365",focus:"Solo guitar arrangements and chord melody",url:"https://fingerstyle365.com"},
 ];
+
+// ── COMPUTED TOTAL ──
+const TOTAL_WEEKS = PHASES.reduce((sum, p) => sum + p.weeks_data.length, 0);
 
 // ── STORAGE ──
 function loadProgress(){ try{return JSON.parse(localStorage.getItem('guitar-progress'))||{}}catch(e){return{}} }
 function saveProgress(p){ localStorage.setItem('guitar-progress',JSON.stringify(p)); }
 function loadOpen(){ try{return JSON.parse(localStorage.getItem('guitar-open'))||{}}catch(e){return{}} }
 function saveOpen(o){ localStorage.setItem('guitar-open',JSON.stringify(o)); }
+function loadCustomLinks(phaseId){ try{const d=localStorage.getItem('guitar-links-'+phaseId); return d?JSON.parse(d):null;}catch(e){return null;} }
+function saveCustomLinks(phaseId,links){ localStorage.setItem('guitar-links-'+phaseId,JSON.stringify(links)); }
+function removeCustomLinks(phaseId){ localStorage.removeItem('guitar-links-'+phaseId); }
+
+// ── HELPERS ──
+function escapeHtml(str){ const d=document.createElement('div'); d.textContent=str||''; return d.innerHTML; }
+function escapeAttr(str){ return(str||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function getEffectiveLinks(phase){ return loadCustomLinks(phase.id)||phase.resources; }
 
 // ── RENDER ──
 function render(){
@@ -353,13 +478,14 @@ function render(){
     const completedCount = phase.weeks_data.filter(w => progress[w.w]).length;
     const total = phase.weeks_data.length;
     const isOpen = openState[phase.id] !== undefined ? openState[phase.id] : false;
+    const links = getEffectiveLinks(phase);
 
     const div = document.createElement('div');
     div.className = 'phase' + (isOpen ? ' open' : '');
     div.innerHTML = `
       <div class="phase-header" data-phase="${phase.id}">
         <span class="phase-badge" style="background:${phase.color}">Phase ${phase.id}</span>
-        <span class="phase-title" style="color:${phase.color}">${phase.title}</span>
+        <span class="phase-title" style="color:${phase.color}">${escapeHtml(phase.title)}</span>
         <span class="phase-progress-mini">${completedCount}/${total}</span>
         <span class="phase-chevron">▼</span>
       </div>
@@ -368,9 +494,9 @@ function render(){
         ${phase.weeks_data.map(w => `
           <div class="week-card ${progress[w.w]?'completed':''}">
             <div class="week-num" style="color:${phase.color}">WEEK ${w.w}</div>
-            <div class="week-topic">${w.topic}</div>
-            <div class="week-practice">${w.practice}</div>
-            <div class="week-milestone"><strong>Milestone:</strong> ${w.milestone}</div>
+            <div class="week-topic">${escapeHtml(w.topic)}</div>
+            <div class="week-practice">${escapeHtml(w.practice)}</div>
+            <div class="week-milestone"><strong>Milestone:</strong> ${escapeHtml(w.milestone)}</div>
             <label class="week-check">
               <input type="checkbox" data-week="${w.w}" ${progress[w.w]?'checked':''}>
               <span>${progress[w.w]?'Completed ✓':'Mark complete'}</span>
@@ -378,11 +504,14 @@ function render(){
           </div>
         `).join('')}
         <div class="resource-section">
-          <h4>📚 Resources</h4>
-          ${phase.resources.map(r => `
+          <div class="resource-header">
+            <h4>📚 Resources</h4>
+            <button class="edit-links-btn" data-phase="${phase.id}">✏ Edit</button>
+          </div>
+          ${links.map(r => `
             <div class="resource-item">
-              <a href="${r.url}" target="_blank" rel="noopener">${r.name}</a><br>
-              <span class="resource-desc">${r.desc}</span>
+              <a href="${escapeAttr(r.url)}" target="_blank" rel="noopener">${escapeHtml(r.name)}</a><br>
+              <span class="resource-desc">${escapeHtml(r.desc)}</span>
             </div>
           `).join('')}
         </div>
@@ -395,9 +524,9 @@ function render(){
   const chContainer = document.getElementById('channels-container');
   chContainer.innerHTML = CHANNELS.map(c => `
     <div class="channel-card">
-      <strong>${c.name}</strong>
-      <div class="ch-focus">${c.focus}</div>
-      <a href="${c.url}" target="_blank" rel="noopener">${c.url.replace('https://www.','').replace('https://','')}</a>
+      <strong>${escapeHtml(c.name)}</strong>
+      <div class="ch-focus">${escapeHtml(c.focus)}</div>
+      <a href="${escapeAttr(c.url)}" target="_blank" rel="noopener">${escapeHtml(c.url.replace('https://www.','').replace('https://',''))}</a>
     </div>
   `).join('');
 
@@ -407,15 +536,13 @@ function render(){
 
 function updateProgress(){
   const progress = loadProgress();
-  const total = 40;
   const done = Object.values(progress).filter(Boolean).length;
-  const pct = (done/total)*100;
+  const pct = (done/TOTAL_WEEKS)*100;
   document.getElementById('prog-fill').style.width = pct+'%';
-  document.getElementById('prog-text').textContent = done+' / '+total;
+  document.getElementById('prog-text').textContent = done+' / '+TOTAL_WEEKS;
 }
 
 function bindEvents(){
-  // Phase toggles
   document.querySelectorAll('.phase-header').forEach(h => {
     h.addEventListener('click', () => {
       const id = h.dataset.phase;
@@ -427,7 +554,6 @@ function bindEvents(){
     });
   });
 
-  // Checkboxes
   document.querySelectorAll('.week-check input').forEach(cb => {
     cb.addEventListener('change', () => {
       const w = cb.dataset.week;
@@ -440,6 +566,13 @@ function bindEvents(){
       updateProgress();
     });
   });
+
+  document.querySelectorAll('.edit-links-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      openLinkEditor(parseInt(btn.dataset.phase));
+    });
+  });
 }
 
 function resetProgress(){
@@ -447,6 +580,81 @@ function resetProgress(){
     localStorage.removeItem('guitar-progress');
     localStorage.removeItem('guitar-open');
     render();
+  }
+}
+
+// ── LINK EDITOR ──
+let _editPhaseId = null;
+let _editLinks = [];
+
+function openLinkEditor(phaseId){
+  _editPhaseId = phaseId;
+  const phase = PHASES.find(p => p.id === phaseId);
+  const saved = loadCustomLinks(phaseId);
+  _editLinks = (saved || phase.resources).map(r => ({...r}));
+  document.getElementById('modal-title').textContent = 'Edit Links — Phase ' + phaseId;
+  renderLinkEditor();
+  document.getElementById('link-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLinkEditor(){
+  document.getElementById('link-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function handleModalOverlayClick(e){
+  if(e.target === document.getElementById('link-modal')) closeLinkEditor();
+}
+
+function renderLinkEditor(){
+  const list = document.getElementById('modal-links-list');
+  list.innerHTML = _editLinks.map((link, i) => `
+    <div class="modal-link-row">
+      <div class="modal-link-fields">
+        <input class="modal-input link-name" value="${escapeAttr(link.name)}" placeholder="Link name">
+        <input class="modal-input link-url" value="${escapeAttr(link.url)}" placeholder="https://...">
+        <input class="modal-input link-desc" value="${escapeAttr(link.desc)}" placeholder="Short description">
+      </div>
+      <button class="modal-delete-btn" onclick="deleteLink(${i})" title="Remove">✕</button>
+    </div>
+  `).join('');
+}
+
+function collectEditorState(){
+  return Array.from(document.querySelectorAll('#modal-links-list .modal-link-row')).map(row => ({
+    name: row.querySelector('.link-name').value.trim(),
+    url:  row.querySelector('.link-url').value.trim(),
+    desc: row.querySelector('.link-desc').value.trim()
+  })).filter(l => l.name || l.url);
+}
+
+function deleteLink(idx){
+  _editLinks = collectEditorState();
+  _editLinks.splice(idx, 1);
+  renderLinkEditor();
+}
+
+function addLink(){
+  _editLinks = collectEditorState();
+  _editLinks.push({name:'', url:'', desc:''});
+  renderLinkEditor();
+  document.getElementById('modal-links-list').lastElementChild?.scrollIntoView({behavior:'smooth'});
+}
+
+function saveLinkEditor(){
+  const links = collectEditorState();
+  saveCustomLinks(_editPhaseId, links);
+  closeLinkEditor();
+  render();
+}
+
+function resetLinksToDefault(){
+  if(confirm('Reset Phase ' + _editPhaseId + ' links back to defaults?')){
+    removeCustomLinks(_editPhaseId);
+    const phase = PHASES.find(p => p.id === _editPhaseId);
+    _editLinks = phase.resources.map(r => ({...r}));
+    renderLinkEditor();
   }
 }
 
